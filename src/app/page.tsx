@@ -167,8 +167,13 @@ const ProductGrid = styled(motion.div)`
 
 const CategoryGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: ${({ theme }) => theme.spacing[6]};
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: ${({ theme }) => theme.spacing[8]};
+
+  > div {
+    display: grid;
+    gap: ${({ theme }) => theme.spacing[5]};
+  }
 `;
 
 const CategoryCard = styled(motion.div)<{ $url?: string }>`
@@ -177,7 +182,7 @@ const CategoryCard = styled(motion.div)<{ $url?: string }>`
   overflow: hidden;
   width: 100%;
   height: 100%;
-  min-height: 200px;
+  min-height: 250px;
   cursor: pointer;
   background: linear-gradient(
     135deg,
@@ -395,33 +400,35 @@ export default function HomePage() {
         </HeroSection>
 
         {/* Predicted Aesthetics */}
-        <Section>
-          <Container>
-            <AnimatedSection>
-              <SectionHeader>
-                <SectionTitle>Predicted Aesthetics</SectionTitle>
-                <SectionLink href="/shop">View All →</SectionLink>
-              </SectionHeader>
-            </AnimatedSection>
-            <AnimatedSection stagger>
-              {predictedProducts.length === 0 ? (
-                <div style={{ textAlign: "center", padding: "3rem 0" }}>
-                  <p style={{ color: "#596065", fontSize: "0.95rem" }}>
-                    No products available at the moment.
-                  </p>
-                </div>
-              ) : (
-                <ProductGrid variants={staggerContainer}>
-                  {predictedProducts.map((product) => (
-                    <AnimatedItem key={product.id}>
-                      <ProductCard product={product} />
-                    </AnimatedItem>
-                  ))}
-                </ProductGrid>
-              )}
-            </AnimatedSection>
-          </Container>
-        </Section>
+        {predictedProducts.length > 0 && (
+          <Section>
+            <Container>
+              <AnimatedSection>
+                <SectionHeader>
+                  <SectionTitle>Predicted Aesthetics</SectionTitle>
+                  <SectionLink href="/shop">View All →</SectionLink>
+                </SectionHeader>
+              </AnimatedSection>
+              <AnimatedSection stagger>
+                {predictedProducts.length === 0 ? (
+                  <div style={{ textAlign: "center", padding: "3rem 0" }}>
+                    <p style={{ color: "#596065", fontSize: "0.95rem" }}>
+                      No products available at the moment.
+                    </p>
+                  </div>
+                ) : (
+                  <ProductGrid variants={staggerContainer}>
+                    {predictedProducts.map((product) => (
+                      <AnimatedItem key={product.id}>
+                        <ProductCard product={product} />
+                      </AnimatedItem>
+                    ))}
+                  </ProductGrid>
+                )}
+              </AnimatedSection>
+            </Container>
+          </Section>
+        )}
 
         {/* Shop by Category */}
         <SectionAlt>
