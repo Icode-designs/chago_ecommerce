@@ -1,11 +1,13 @@
-export type UserRole = 'customer' | 'vendor' | 'admin';
+export type UserRole = "customer" | "vendor" | "admin";
 
 export interface Profile {
   id: string;
+  email?: string;
   full_name: string | null;
   avatar_url: string | null;
   role: UserRole;
   phone: string | null;
+  is_suspended?: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -21,7 +23,7 @@ export interface Product {
   category_id: string | null;
   images: string[];
   stock: number;
-  status: 'draft' | 'active' | 'archived';
+  status: "draft" | "active" | "archived";
   is_featured?: boolean;
   created_at: string;
   updated_at: string;
@@ -42,7 +44,7 @@ export interface Category {
 export interface Order {
   id: string;
   customer_id: string;
-  status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+  status: "pending" | "processing" | "shipped" | "delivered" | "cancelled";
   total: number;
   shipping_address: ShippingAddress | null;
   created_at: string;
@@ -97,7 +99,7 @@ export interface Dispute {
   customer_id: string;
   vendor_id: string;
   reason: string;
-  status: 'open' | 'in_review' | 'resolved' | 'closed';
+  status: "open" | "in_review" | "resolved" | "closed";
   resolution: string | null;
   created_at: string;
   updated_at: string;

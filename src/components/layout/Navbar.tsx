@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useCart } from "@/hooks/useCart";
 import { useAuth } from "@/hooks/useAuth";
 import AISearchBar from "@/components/ai/AISearchBar";
+import Logo from "../logo";
 
 const Header = styled(motion.header)`
   position: fixed;
@@ -15,7 +16,7 @@ const Header = styled(motion.header)`
   left: 0;
   right: 0;
   z-index: ${({ theme }) => theme.zIndices.sticky};
-  background: ${({ theme }) => theme.colors.glass};
+  background: ${({ theme }) => theme.colors.inversePrimary};
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   height: ${({ theme }) => theme.layout.headerHeight};
@@ -35,13 +36,6 @@ const Nav = styled.nav`
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
     padding: 0 ${({ theme }) => theme.spacing[4]};
   }
-`;
-
-const Logo = styled(Link)`
-  font-size: ${({ theme }) => theme.fontSizes.titleLg};
-  font-weight: ${({ theme }) => theme.fontWeights.bold};
-  color: ${({ theme }) => theme.colors.primary};
-  letter-spacing: ${({ theme }) => theme.letterSpacings.tight};
 `;
 
 const NavLinks = styled.div`
@@ -158,7 +152,7 @@ const MobileMenu = styled(motion.div)`
   bottom: 0;
   width: 300px;
   background: ${({ theme }) => theme.colors.surfaceContainerLowest};
-  z-index: ${({ theme }) => theme.zIndices.modal};
+  z-index: 1500;
   padding: ${({ theme }) => theme.spacing[8]} ${({ theme }) => theme.spacing[6]};
   display: flex;
   flex-direction: column;
@@ -227,7 +221,7 @@ export default function Navbar() {
         }}
       >
         <Nav>
-          <Logo href="/">Chago</Logo>
+          <Logo size="sm" dark />
 
           <NavLinks>
             <NavLink href="/shop" $active={pathname === "/shop"}>

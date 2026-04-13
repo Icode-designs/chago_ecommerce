@@ -453,3 +453,53 @@ export async function getVendorStats(vendorId: string) {
     };
   }
 }
+
+// ============================================
+// USER MANAGEMENT
+// ============================================
+
+export async function getAllUsers() {
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("id, full_name, avatar_url, role, phone, created_at, updated_at")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Error fetching users:", error);
+    return [];
+  }
+
+  return data as Profile[];
+}
+
+export async function suspendUser(userId: string) {
+  const { data, error } = await supabase
+    .from("profiles")
+    .update({ is_suspended: true })
+    .eq("id", userId)
+    .select()
+    .single();
+
+  if (error) {
+    console.error("Error suspending user:", error);
+    return null;
+  }
+
+  return data;
+}
+
+export async function unsuspendUser(userId: string) {
+  const { data, error } = await supabase
+    .from("profiles")
+    .update({ is_suspended: false })
+    .eq("id", userId)
+    .select()
+    .single();
+
+  if (error) {
+    console.error("Error unsuspending user:", error);
+    return null;
+  }
+
+  return data;
+}

@@ -1,21 +1,44 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 
-const SidebarContainer = styled.aside`
+const SidebarContainer = styled.aside<{ $isOpen?: boolean }>`
   width: 260px;
-  background: ${({ theme }) => theme.colors.surfaceContainerLowest};
+  background: ${({ theme }) => theme.colors.inverseSurface};
   border-right: 1px solid ${({ theme }) => theme.colors.surfaceContainerHigh};
   display: flex;
   flex-direction: column;
   padding: ${({ theme }) => theme.spacing[6]} ${({ theme }) => theme.spacing[4]};
 
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
-    display: none; // Would be replaced by a drawer component in a real app
+    position: fixed;
+    left: 0;
+    top: ${({ theme }) => theme.layout.headerHeight};
+    height: calc(100vh - ${({ theme }) => theme.layout.headerHeight});
+    z-index: 999;
+    transform: translateX(${({ $isOpen }) => ($isOpen ? "0" : "-100%")});
+    transition: transform 0.3s ease;
+    box-shadow: ${({ $isOpen }) =>
+      $isOpen ? "2px 0 8px rgba(0, 0, 0, 0.15)" : "none"};
+  }
+`;
+
+const Overlay = styled.div<{ $isOpen?: boolean }>`
+  display: none;
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
+    display: ${({ $isOpen }) => ($isOpen ? "block" : "none")};
+    position: fixed;
+    top: ${({ theme }) => theme.layout.headerHeight};
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 998;
   }
 `;
 
@@ -30,9 +53,9 @@ const NavLink = styled(Link)<{ $active?: boolean }>`
   border-radius: ${({ theme }) => theme.radii.md};
   font-size: ${({ theme }) => theme.fontSizes.bodyMd};
   font-weight: ${({ theme, $active }) =>
-    $active ? theme.fontWeights.medium : theme.fontWeights.regular};
+    $active ? theme.fontWeights.medium : theme.fontWeights.semibold};
   color: ${({ theme, $active }) =>
-    $active ? theme.colors.primary : theme.colors.textSecondary};
+    $active ? theme.colors.text : theme.colors.textTertiary};
   background: ${({ theme, $active }) =>
     $active ? theme.colors.surfaceContainerLow : "transparent"};
   transition: all ${({ theme }) => theme.transitions.fast};
@@ -109,7 +132,49 @@ const SignOutButton = styled.button`
   }
 `;
 
-export default function DashboardSidebar() {
+const ToggleButton = styled.button`
+  display: none;
+  width: 45px;
+  height: 36px;
+  border: none;
+  background: ${({ theme }) => theme.colors.inverseSurface};
+  cursor: pointer;
+  padding: 0;
+  align-items: center;
+  justify-content: center;
+  color: ${({ theme }) => theme.colors.inversePrimary};
+  border-radius: 50%;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  transition: all ${({ theme }) => theme.transitions.fast};
+  position: absolute;
+  top: 0px;
+  right: -30px;
+  z-index: 1001;
+  box-shadow: -2px 0 6px rgba(0, 0, 0, 0.1);
+
+  &:hover {
+    box-shadow: -2px 0 8px rgba(0, 0, 0, 0.15);
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
+    display: flex;
+  }
+
+  @media (min-width: ${({ theme }) => theme.breakpoints.desktop}) {
+    display: none !important;
+  }
+`;
+
+export default function DashboardSidebar({
+  isOpen,
+  onClose,
+  onToggle,
+}: {
+  isOpen?: boolean;
+  onClose?: () => void;
+  onToggle?: () => void;
+}) {
   const pathname = usePathname();
   const { user, profile, signOut } = useAuth();
 
@@ -117,24 +182,73 @@ export default function DashboardSidebar() {
   const isAdmin = pathname.startsWith("/admin");
   const links = isAdmin ? adminLinks : isVendor ? vendorLinks : customerLinks;
 
+  const handleLinkClick = () => {
+    onClose?.();
+  };
+
   return (
-    <SidebarContainer>
-      <NavList>
-        {links.map((link) => (
-          <NavLink
-            key={link.name}
-            href={link.href}
-            $active={pathname === link.href}
-          >
-            {link.name}
-          </NavLink>
-        ))}
-        <SignOutButton onClick={signOut}>Sign Out</SignOutButton>
-      </NavList>
-      <UserSection>
-        <UserName>{profile?.full_name || "User"}</UserName>
-        <UserEmail>{user?.email || ""}</UserEmail>
-      </UserSection>
-    </SidebarContainer>
+    <>
+      <Overlay $isOpen={isOpen} onClick={onClose} />
+      <SidebarContainer $isOpen={isOpen}>
+        <ToggleButton
+          onClick={onToggle}
+          aria-label="Toggle Sidebar"
+          title="Toggle Sidebar"
+        >
+          {isOpen ? (
+            // Arrow left (sidebar is open, show arrow to close it)
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={2.5}
+              stroke="currentColor"
+              width="22"
+              height="22"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M15 19l-7-7 7-7"
+              />
+            </svg>
+          ) : (
+            // Arrow right (sidebar is closed, show arrow to open it)
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={2.5}
+              stroke="currentColor"
+              width="22"
+              height="22"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M9 5l7 7-7 7"
+              />
+            </svg>
+          )}
+        </ToggleButton>
+        <NavList>
+          {links.map((link) => (
+            <NavLink
+              key={link.name}
+              href={link.href}
+              $active={pathname === link.href}
+              onClick={handleLinkClick}
+            >
+              {link.name}
+            </NavLink>
+          ))}
+          <SignOutButton onClick={signOut}>Sign Out</SignOutButton>
+        </NavList>
+        <UserSection>
+          <UserName>{profile?.full_name || "User"}</UserName>
+          <UserEmail>{user?.email || ""}</UserEmail>
+        </UserSection>
+      </SidebarContainer>
+    </>
   );
 }

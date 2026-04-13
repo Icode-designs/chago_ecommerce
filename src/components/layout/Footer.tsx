@@ -1,12 +1,14 @@
-'use client';
+"use client";
 
-import React from 'react';
-import Link from 'next/link';
-import styled from 'styled-components';
+import React from "react";
+import Link from "next/link";
+import styled from "styled-components";
+import Logo from "../logo";
 
 const FooterWrapper = styled.footer`
-  background: ${({ theme }) => theme.colors.surfaceContainerLow};
-  padding: ${({ theme }) => theme.spacing[16]} 0 ${({ theme }) => theme.spacing[8]};
+  background: ${({ theme }) => theme.colors.inverseSurface};
+  padding: ${({ theme }) => theme.spacing[16]} 0
+    ${({ theme }) => theme.spacing[8]};
   margin-top: auto;
 `;
 
@@ -40,13 +42,6 @@ const FooterBrand = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing[4]};
-`;
-
-const BrandName = styled.span`
-  font-size: ${({ theme }) => theme.fontSizes.titleLg};
-  font-weight: ${({ theme }) => theme.fontWeights.bold};
-  color: ${({ theme }) => theme.colors.primary};
-  letter-spacing: ${({ theme }) => theme.letterSpacings.tight};
 `;
 
 const BrandDesc = styled.p`
@@ -86,7 +81,7 @@ const FooterBottom = styled.div`
   align-items: center;
   justify-content: space-between;
   padding-top: ${({ theme }) => theme.spacing[6]};
-  
+
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
     flex-direction: column;
     gap: ${({ theme }) => theme.spacing[3]};
@@ -105,9 +100,10 @@ export default function Footer() {
       <FooterInner>
         <FooterGrid>
           <FooterBrand>
-            <BrandName>Chago</BrandName>
+            <Logo size="md" />
             <BrandDesc>
-              A sanctuary for high-end digital commerce and aesthetic discovery powered by neural search.
+              A sanctuary for high-end digital commerce and aesthetic discovery
+              powered by neural search.
             </BrandDesc>
           </FooterBrand>
 
@@ -133,7 +129,9 @@ export default function Footer() {
         </FooterGrid>
 
         <FooterBottom>
-          <Copyright>© {new Date().getFullYear()} Chago. All rights reserved.</Copyright>
+          <Copyright>
+            © {new Date().getFullYear()} Chago. All rights reserved.
+          </Copyright>
         </FooterBottom>
       </FooterInner>
     </FooterWrapper>

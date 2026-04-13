@@ -1,21 +1,22 @@
-import type { Metadata } from 'next';
-import Providers from './providers';
-import { Inter} from 'next/font/google';
+import type { Metadata } from "next";
+import Providers from "./providers";
+import { Inter } from "next/font/google";
 
 const inter = Inter({
-  subsets: ['latin'],
-  variable: '--font-inter',
-  display: 'swap',
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: 'Chago | AI-Powered Premium Marketplace',
-  description: 'Discover curated products powered by AI. Chago is a premium marketplace where curation meets intelligence.',
-  keywords: ['marketplace', 'AI', 'shopping', 'premium', 'curated'],
+  title: "Chago | AI-Powered Premium Marketplace",
+  description:
+    "Discover curated products powered by AI. Chago is a premium marketplace where curation meets intelligence.",
+  keywords: ["marketplace", "AI", "shopping", "premium", "curated"],
   openGraph: {
-    title: 'Chago | AI-Powered Premium Marketplace',
-    description: 'Discover curated products powered by AI.',
-    type: 'website',
+    title: "Chago | AI-Powered Premium Marketplace",
+    description: "Discover curated products powered by AI.",
+    type: "website",
   },
 };
 
