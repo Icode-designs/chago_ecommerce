@@ -98,6 +98,7 @@ export default function AdminUserDetailPage() {
   useEffect(() => {
     const loadUser = async () => {
       try {
+        setLoading(true);
         const profile = await getProfile(userId);
         setUserProfile(profile);
       } catch (err) {

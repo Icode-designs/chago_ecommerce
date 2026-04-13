@@ -102,6 +102,44 @@ export async function getVendorProducts(vendorId: string) {
   return data as Product[];
 }
 
+export async function createProduct(
+  vendorId: string,
+  name: string,
+  slug: string,
+  description: string | null,
+  categoryId: string,
+  price: number,
+  compareAtPrice: number | null,
+  stock: number,
+  images: string[] = [],
+) {
+  const { data, error } = await supabase
+    .from("products")
+    .insert([
+      {
+        vendor_id: vendorId,
+        name,
+        slug,
+        description,
+        category_id: categoryId,
+        price,
+        compare_at_price: compareAtPrice,
+        stock,
+        images,
+        status: "draft",
+      },
+    ])
+    .select("*, category:categories(*), vendor:profiles(*)")
+    .single();
+
+  if (error) {
+    console.error("Error creating product:", error);
+    throw error;
+  }
+
+  return data as Product;
+}
+
 // ============================================
 // CATEGORIES
 // ============================================
@@ -133,6 +171,93 @@ export async function getCategoryBySlug(slug: string) {
   }
 
   return data as Category;
+}
+
+export async function createCategory(
+  name: string,
+  slug: string,
+  description?: string,
+  imageUrl?: string,
+) {
+  const { data, error } = await supabase
+    .from("categories")
+    .insert({
+      name,
+      slug,
+      description: description || null,
+      image_url: imageUrl || null,
+    })
+    .select()
+    .single();
+
+  if (error) {
+    console.error("Error creating category:", error);
+    throw error;
+  }
+
+  return data as Category;
+}
+
+export async function updateCategory(
+  categoryId: string,
+  name: string,
+  slug: string,
+  description?: string,
+  imageUrl?: string,
+) {
+  const { data, error } = await supabase
+    .from("categories")
+    .update({
+      name,
+      slug,
+      description: description || null,
+      image_url: imageUrl || null,
+    })
+    .eq("id", categoryId)
+    .select()
+    .single();
+
+  if (error) {
+    console.error("Error updating category:", error);
+    throw error;
+  }
+
+  return data as Category;
+}
+
+export async function uploadCategoryImage(file: File, categoryId: string) {
+  const fileExt = file.name.split(".").pop();
+  const fileName = `${categoryId}-${Date.now()}.${fileExt}`;
+  const filePath = `categories/${fileName}`;
+
+  const { data, error: uploadError } = await supabase.storage
+    .from("category-images")
+    .upload(filePath, file, { upsert: false });
+
+  if (uploadError) {
+    console.error("Error uploading category image:", uploadError);
+    throw uploadError;
+  }
+
+  const { data: publicUrl } = supabase.storage
+    .from("category-images")
+    .getPublicUrl(filePath);
+
+  return publicUrl.publicUrl;
+}
+
+export async function deleteCategoryImage(imageUrl: string) {
+  const urlParts = imageUrl.split("/");
+  const filePath = urlParts.slice(-2).join("/");
+
+  const { error } = await supabase.storage
+    .from("category-images")
+    .remove([filePath]);
+
+  if (error) {
+    console.error("Error deleting category image:", error);
+    throw error;
+  }
 }
 
 // ============================================
@@ -461,7 +586,9 @@ export async function getVendorStats(vendorId: string) {
 export async function getAllUsers() {
   const { data, error } = await supabase
     .from("profiles")
-    .select("id, full_name, avatar_url, role, phone, created_at, updated_at")
+    .select(
+      "id, email, full_name, avatar_url, role, phone, created_at, updated_at",
+    )
     .order("created_at", { ascending: false });
 
   if (error) {
@@ -481,8 +608,7 @@ export async function suspendUser(userId: string) {
     .single();
 
   if (error) {
-    console.error("Error suspending user:", error);
-    return null;
+    throw new Error(error.message || "Failed to suspend user");
   }
 
   return data;
@@ -497,9 +623,19 @@ export async function unsuspendUser(userId: string) {
     .single();
 
   if (error) {
-    console.error("Error unsuspending user:", error);
-    return null;
+    throw new Error(error.message || "Failed to unsuspend user");
   }
 
   return data;
+}
+
+export async function syncExistingUserEmails() {
+  const { data, error } = await supabase.rpc("sync_existing_user_emails");
+
+  if (error) {
+    console.error("Error syncing user emails:", error);
+    return 0;
+  }
+
+  return data?.[0]?.updated_count || 0;
 }

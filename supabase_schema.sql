@@ -16,6 +16,7 @@ create type dispute_status as enum ('open', 'in_review', 'resolved', 'closed');
 -- Profiles
 create table public.profiles (
   id uuid references auth.users on delete cascade not null primary key,
+  email text,
   full_name text,
   avatar_url text,
   role user_role default 'customer'::user_role not null,
@@ -262,9 +263,10 @@ create trigger set_disputes_updated_at
 create or replace function public.handle_new_user()
 returns trigger as $function$
 begin
-  insert into public.profiles (id, full_name, avatar_url, role)
+  insert into public.profiles (id, email, full_name, avatar_url, role)
   values (
-    new.id, 
+    new.id,
+    new.email,
     new.raw_user_meta_data->>'full_name', 
     new.raw_user_meta_data->>'avatar_url',
     COALESCE((new.raw_user_meta_data->>'role')::user_role, 'customer'::user_role)
@@ -276,6 +278,22 @@ $function$ language plpgsql security definer;
 create trigger on_auth_user_created
   after insert on auth.users
   for each row execute procedure public.handle_new_user();
+
+create or replace function public.sync_existing_user_emails()
+returns table(updated_count bigint) as $function$
+declare
+  v_count bigint;
+begin
+  update public.profiles p
+  set email = au.email
+  from auth.users au
+  where p.id = au.id 
+    and (p.email is null or p.email = '');
+  
+  get diagnostics v_count = row_count;
+  return query select v_count;
+end;
+$function$ language plpgsql security definer;
 
 -- 7. STORAGE SETUP
 insert into storage.buckets (id, name, public) values ('product-images', 'product-images', true) on conflict do nothing;

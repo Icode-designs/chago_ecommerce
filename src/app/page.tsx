@@ -17,6 +17,7 @@ import {
   getCategories,
 } from "@/lib/supabase/services";
 import { Product, Category } from "@/lib/types";
+import heroBg from "@/assets/heroBg.jpeg";
 
 const PageWrapper = styled.div`
   min-height: 100vh;
@@ -50,6 +51,10 @@ const HeroSection = styled.section`
   flex-direction: column;
   align-items: center;
   text-align: center;
+  background-image: url(${heroBg.src});
+  background-position: top;
+  background-size: cover;
+  background-repeat: no-repeat;
 
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
     padding: ${({ theme }) => theme.spacing[12]} 0
@@ -77,7 +82,7 @@ const HeroLabel = styled(motion.span)`
 const HeroTitle = styled(motion.h1)`
   font-size: ${({ theme }) => theme.fontSizes.displayLg};
   font-weight: ${({ theme }) => theme.fontWeights.bold};
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.inversePrimary};
   letter-spacing: ${({ theme }) => theme.letterSpacings.tight};
   margin-bottom: ${({ theme }) => theme.spacing[4]};
   max-width: 640px;
@@ -93,7 +98,7 @@ const HeroTitle = styled(motion.h1)`
 
 const HeroDescription = styled(motion.p)`
   font-size: ${({ theme }) => theme.fontSizes.bodyLg};
-  color: ${({ theme }) => theme.colors.textSecondary};
+  color: ${({ theme }) => theme.colors.inversePrimary};
   line-height: ${({ theme }) => theme.lineHeights.relaxed};
   max-width: 520px;
   margin-bottom: ${({ theme }) => theme.spacing[8]};

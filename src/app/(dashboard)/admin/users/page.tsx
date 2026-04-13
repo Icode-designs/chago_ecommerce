@@ -133,6 +133,7 @@ export default function AdminUsersPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    setLoading(true);
     const loadUsers = async () => {
       try {
         const fetchedUsers = await getAllUsers();
@@ -160,6 +161,23 @@ export default function AdminUsersPage() {
       .includes(searchQuery.toLowerCase());
     return isNotCurrentUser && matchesRole && matchesSearch;
   });
+
+  if (loading) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <PageHeader>
+          <Title>User Management</Title>
+        </PageHeader>
+        <div style={{ padding: "3rem 2rem", textAlign: "center" }}>
+          <p style={{ fontSize: "1rem", color: "#86868B" }}>Loading users...</p>
+        </div>
+      </motion.div>
+    );
+  }
 
   const roles = ["admin", "vendor", "customer"];
 
@@ -225,21 +243,10 @@ export default function AdminUsersPage() {
             </tr>
           </thead>
           <tbody>
-            {loading ? (
-              <Tr>
-                <Td
-                  colSpan={4}
-                  style={{ textAlign: "center", padding: "32px" }}
-                >
-                  Loading users...
-                </Td>
-              </Tr>
-            ) : filteredUsers.length > 0 ? (
+            {filteredUsers.length > 0 ? (
               filteredUsers.map((u) => (
                 <Tr key={u.id}>
-                  <Td style={{ fontWeight: 500 }}>
-                    {u.email || u.full_name || "No email"}
-                  </Td>
+                  <Td style={{ fontWeight: 500 }}>{u.email || "No email"}</Td>
                   <Td>
                     <RoleBadge $role={u.role}>{u.role}</RoleBadge>
                   </Td>
