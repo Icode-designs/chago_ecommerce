@@ -177,6 +177,7 @@ export default function DashboardSidebar({
 }) {
   const pathname = usePathname();
   const { user, profile, signOut } = useAuth();
+  const [loading, setLoading] = useState(false);
 
   const isVendor = pathname.startsWith("/vendor");
   const isAdmin = pathname.startsWith("/admin");
@@ -185,10 +186,6 @@ export default function DashboardSidebar({
   const handleLinkClick = () => {
     onClose?.();
   };
-  function handleSignOut() {
-    signOut();
-    redirect("/");
-  }
 
   return (
     <>
@@ -246,7 +243,7 @@ export default function DashboardSidebar({
               {link.name}
             </NavLink>
           ))}
-          <SignOutButton onClick={handleSignOut}>Sign Out</SignOutButton>
+          <SignOutButton onClick={signOut}>Sign Out</SignOutButton>
         </NavList>
         <UserSection>
           <UserName>{profile?.full_name || "User"}</UserName>

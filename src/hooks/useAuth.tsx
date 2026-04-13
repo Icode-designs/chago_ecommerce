@@ -10,6 +10,7 @@ import React, {
 import { User } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/client";
 import { Profile, UserRole } from "@/lib/types";
+import { redirect } from "next/navigation";
 
 interface AuthContextType {
   user: User | null;
@@ -127,6 +128,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await supabase.auth.signOut();
     setUser(null);
     setProfile(null);
+    redirect("/");
   };
 
   const signUpWithGoogle = async (role: UserRole = "customer") => {
