@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { redirect, usePathname } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 
 const SidebarContainer = styled.aside<{ $isOpen?: boolean }>`
@@ -185,6 +185,10 @@ export default function DashboardSidebar({
   const handleLinkClick = () => {
     onClose?.();
   };
+  function handleSignOut() {
+    signOut();
+    redirect("/");
+  }
 
   return (
     <>
@@ -242,7 +246,7 @@ export default function DashboardSidebar({
               {link.name}
             </NavLink>
           ))}
-          <SignOutButton onClick={signOut}>Sign Out</SignOutButton>
+          <SignOutButton onClick={handleSignOut}>Sign Out</SignOutButton>
         </NavList>
         <UserSection>
           <UserName>{profile?.full_name || "User"}</UserName>
