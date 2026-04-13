@@ -133,6 +133,7 @@ export default function VendorProductsPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true);
         if (user?.id) {
           const vendorProducts = await getVendorProducts(user.id);
           setProducts(vendorProducts);

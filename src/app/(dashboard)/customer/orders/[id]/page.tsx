@@ -135,6 +135,7 @@ export default function OrderDetailsPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true);
         if (typeof params.id === "string") {
           const orderData = await getOrderById(params.id);
           setOrder(orderData);

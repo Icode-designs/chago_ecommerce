@@ -264,6 +264,7 @@ export default function ProductDetailPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true);
         const productData = await getProductById(params.id as string);
         if (productData) {
           setProduct(productData);

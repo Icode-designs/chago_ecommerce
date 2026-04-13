@@ -48,6 +48,7 @@ export default function WishlistPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true);
         if (user?.id) {
           const items = await getUserWishlist(user.id);
           setWishlistItems(items);

@@ -103,6 +103,7 @@ export default function VendorOrdersPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true);
         if (user?.id) {
           const vendorOrders = await getVendorOrders(user.id);
           setOrders(vendorOrders);

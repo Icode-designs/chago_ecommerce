@@ -93,6 +93,7 @@ export default function OrdersPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true);
         if (user?.id) {
           const customerOrders = await getCustomerOrders(user.id);
           setOrders(customerOrders);

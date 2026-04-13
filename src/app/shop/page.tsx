@@ -159,6 +159,7 @@ export default function ShopPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true);
         const [products, cats] = await Promise.all([
           getProducts(),
           getCategories(),

@@ -108,6 +108,7 @@ export default function CollectionsPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true);
         const data = await getProducts({ limit: 50 });
         setProducts(data);
       } catch (error) {

@@ -156,6 +156,7 @@ export default function CustomerDashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true);
         if (user?.id) {
           const [customerOrders, featuredProds, wishlist] = await Promise.all([
             getCustomerOrders(user.id),

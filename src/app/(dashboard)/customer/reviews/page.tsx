@@ -91,6 +91,7 @@ export default function ReviewsPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true);
         if (user?.id) {
           const userReviews = await getUserReviews(user.id);
           setReviews(userReviews);

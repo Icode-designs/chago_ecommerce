@@ -134,6 +134,7 @@ export default function VendorDashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true);
         if (user?.id) {
           const [vendorOrders, stats] = await Promise.all([
             getVendorOrders(user.id),

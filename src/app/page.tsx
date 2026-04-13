@@ -313,6 +313,7 @@ export default function HomePage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    setLoading(true);
     const fetchData = async () => {
       try {
         const [allProducts, featured, cats] = await Promise.all([
