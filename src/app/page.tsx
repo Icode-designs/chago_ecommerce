@@ -167,38 +167,38 @@ const ProductGrid = styled(motion.div)`
 
 const CategoryGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: ${({ theme }) => theme.spacing[6]};
-
-  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
-    grid-template-columns: 1fr;
-  }
 `;
 
-const CategoryCard = styled(motion.div)`
+const CategoryCard = styled(motion.div)<{ $url?: string }>`
   position: relative;
   border-radius: ${({ theme }) => theme.radii.xl};
   overflow: hidden;
-  height: 320px;
+  width: 100%;
+  height: 100%;
+  min-height: 200px;
   cursor: pointer;
   background: linear-gradient(
     135deg,
     ${({ theme }) => theme.colors.surfaceContainer} 0%,
     ${({ theme }) => theme.colors.surfaceContainerHigh} 100%
   );
+  background-image: ${({ $url }) => ($url ? `url(${$url})` : "none")};
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   display: flex;
   align-items: flex-end;
   padding: ${({ theme }) => theme.spacing[6]};
-
-  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
-    height: 240px;
-  }
 `;
 
 const CategoryName = styled.h3`
-  font-size: ${({ theme }) => theme.fontSizes.headlineSm};
-  font-weight: ${({ theme }) => theme.fontWeights.semibold};
+  font-size: ${({ theme }) => theme.fontSizes.bodyLg};
+  font-weight: ${({ theme }) => theme.fontWeights.bold};
   color: ${({ theme }) => theme.colors.primary};
+  text-transform: uppercase;
+  text-align: center;
 `;
 
 // ============================================
@@ -441,14 +441,15 @@ export default function HomePage() {
               ) : (
                 <CategoryGrid>
                   {categories.map((category) => (
-                    <CategoryCard
-                      key={category.id}
-                      variants={fadeInUp}
-                      whileHover={{ scale: 1.02 }}
-                      transition={{ duration: 0.3 }}
-                    >
+                    <div key={category.id}>
+                      <CategoryCard
+                        $url={category.image_url || undefined}
+                        variants={fadeInUp}
+                        whileHover={{ scale: 1.02 }}
+                        transition={{ duration: 0.3 }}
+                      />
                       <CategoryName>{category.name}</CategoryName>
-                    </CategoryCard>
+                    </div>
                   ))}
                 </CategoryGrid>
               )}
