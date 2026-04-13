@@ -213,7 +213,7 @@ function LoginForm() {
         if (result.error) {
           setError(result.error);
         } else {
-          router.push("/dashboard");
+          router.push("/role");
         }
       }
     } catch {
